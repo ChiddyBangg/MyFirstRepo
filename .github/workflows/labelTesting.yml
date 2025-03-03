@@ -1,0 +1,7 @@
+on: 
+  label:
+    types:
+      - created
+  push:
+      branches:
+        - testing
