@@ -1,7 +1,7 @@
 name: Create Branch with Generated Name
 
 on:
-  workflow_dispatch:  # This allows the action to be triggered manually.
+  workflow_dispatch:  # Trigger manually via GitHub Actions UI
 
 jobs:
   create_branch:
@@ -10,6 +10,11 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v3
+
+    - name: Set up Git configuration
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
 
     - name: Generate branch name and create the branch
       run: |
@@ -21,7 +26,7 @@ jobs:
         git checkout -b "$BRANCH_NAME"
 
         # Push the new branch to the remote repository
-        git push origin "$BRANCH_NAME"
+        git push --set-upstream origin "$BRANCH_NAME"
 
     - name: Verify the new branch
       run: |
