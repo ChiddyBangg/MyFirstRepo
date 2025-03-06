@@ -1,0 +1,30 @@
+name: Create Branch with Generated Name
+
+on:
+  workflow_dispatch:  # This allows the action to be triggered manually.
+
+jobs:
+  create_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+
+    - name: Generate branch name and create the branch
+      run: |
+        # Generate a branch name (e.g., "feature/{timestamp}")
+        BRANCH_NAME="feature/$(date +'%Y%m%d%H%M%S')"
+        echo "Generated branch name: $BRANCH_NAME"
+
+        # Create the new branch locally
+        git checkout -b "$BRANCH_NAME"
+
+        # Push the new branch to the remote repository
+        git push origin "$BRANCH_NAME"
+
+    - name: Verify the new branch
+      run: |
+        # Fetch all branches to ensure the new one was pushed
+        git fetch --all
+        git branch -r
