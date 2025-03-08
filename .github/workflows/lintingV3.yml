@@ -1,4 +1,4 @@
-name: Unity C# Linting
+name: Unity testiing for the 100th time
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
   lint:
     name: Run C# Linter
-    runs-up: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
