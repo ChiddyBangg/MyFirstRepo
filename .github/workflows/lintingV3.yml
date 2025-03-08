@@ -1,5 +1,4 @@
-name: Unity testiing for the 100th time
-
+name: Uugh
 on:
   push:
     branches: [ main ]
@@ -14,11 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Lint C# code
-        uses: JoshuaKGoldberg/lint-action@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          eslint: false
-          prettier: false
-          stylelint: false
-          dotnet: true
-          dotnetArgs: "--include Assets/Scripts/**/*.cs"
+          dotnet-version: '6.0.x'
+          
+      - name: Install CSharpier
+        run: dotnet tool install -g csharpier
+        
+      - name: Check C# formatting
+        run: csharpier --check "Assets/**/*.cs"
