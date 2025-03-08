@@ -1,0 +1,30 @@
+name: Unity Code Quality Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # This step will work even if your Unity project doesn't have a solution file
+      - name: Run C# code analysis
+        uses: microsoft/continuous-code-quality@v1
+        with:
+          analysis-type: csharp
+          directory: Assets/Scripts
+          report-name: unity-linting-report
+          
+      - name: Upload analysis results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-analysis-report
+          path: unity-linting-report.sarif
