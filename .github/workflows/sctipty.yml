@@ -2,7 +2,7 @@ name: Unity C using bash# Basic Lint
 
 on:
   push:
-    branches: [ main ]
+    branches: []
   pull_request:
     branches: [ main ]
 
