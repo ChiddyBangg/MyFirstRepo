@@ -1,0 +1,34 @@
+name: Unity Builder
+
+on:
+  push: 
+    branches: [ main ]
+
+jobs:
+  build:
+      -name: Create the Unity Build
+      runs-on: ubuntu-latest
+        
+      steps:
+        -name: Checkout Repository
+        uses: actions/checkout@v2
+
+        -name: Set up Unity
+          uses: game-ci/unity-action@v2
+          with:
+            version: 6000.0.32f1
+            unityLicense: ${{secrets.UNITY_LICENSE}}
+
+        -name: Build Unity Project
+        run: |
+          unity -batchmode -nographics -slient-crashes -logfile ./build_logs/UnityBuild.log \
+          - projectPath $(pwd) \
+          -buildTarget StandaloneWindows64 \
+          -executeMethod BuildScript.PerformBuild \
+          -quit
+
+        -name: Upload Build Logs
+          uses: actions/upload-artifact@v3
+          with:
+            name: unity-build-log
+            path: ./build_logs/UnityBuild.log
