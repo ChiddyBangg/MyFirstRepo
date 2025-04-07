@@ -1,11 +1,10 @@
 name: Unity Build and Release
 
+
 on:
   push:
     branches:
       - main 
- 
-
 jobs:
   build:
     runs-on: windows-latest  
