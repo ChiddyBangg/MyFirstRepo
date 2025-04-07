@@ -1,0 +1,60 @@
+name: Unity Build and Release
+
+on:
+  push:
+    branches:
+      - main 
+ 
+
+jobs:
+  build:
+    runs-on: windows-latest  
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Unity
+      uses: game-ci/unity-builder@v2
+      with:
+        unityVersion: '6000.0.32f1' 
+        targetPlatform: 'StandaloneWindows64'
+        buildTarget: 'StandaloneWindows64'
+        buildPath: 'Build/Windows'
+        projectPath: '.'
+        unitySerial: ${{ secrets.UNITY_SERIAL }}
+
+    - name: Generate Version
+      id: version
+      run: |
+        # Create a version based on the current tag or commit hash
+        VERSION="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: unity-build
+        path: Build/Windows
+
+    - name: Create Release on GitHub
+      uses: gh actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: Release ${{ env.VERSION }}
+        body: |
+          - Version: ${{ env.VERSION }}
+          - Description of the release.
+          - Changelog or any notes you want to include in the release.
+        draft: false
+        prerelease: false
+
+    - name: Upload build to release
+      uses: gh actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: Build/Windows/your_build.exe  # Update with the exact name of your EXE
+        asset_name: your_build_${{ env.VERSION }}.exe
+        asset_content_type: application/octet-stream
