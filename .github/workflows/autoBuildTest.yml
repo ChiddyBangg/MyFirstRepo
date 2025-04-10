@@ -34,7 +34,8 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: unity-build
-        path: Build/Windows
+        path: D:\Grigr3 - unity\MyFirstRepo\Build\Eclipsed_Relics.exe 
+        
 
     - name: Create Release on GitHub
       id: create_release  # This ensures the step has an ID and its outputs can be referenced
