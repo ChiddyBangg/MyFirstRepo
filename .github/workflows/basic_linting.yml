@@ -1,0 +1,53 @@
+name: Unity C using bash# Basic Lint
+
+on:
+  push:
+    branches: [ Testing ]
+  pull_request:
+    branches: [ Testing]
+
+jobs:
+  lint:
+    name: Check C# Basic Style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Find C# files with style issues
+        run: |
+          mkdir -p style-report
+          
+          # Use grep to find common style issues
+          echo "## Files with missing/extra braces:" > style-report/brace-issues.md
+          grep -l -P "(^\s*\{\s*$|^\s*\}\s*$)" --include="*.cs" -r Assets/ >> style-report/brace-issues.md || echo "None found" >> style-report/brace-issues.md
+          
+          echo "## Files with too long lines (>100 chars):" > style-report/long-lines.md
+          grep -l -P ".{100,}" --include="*.cs" -r Assets/ >> style-report/long-lines.md || echo "None found" >> style-report/long-lines.md
+          
+          echo "## Files with trailing whitespace:" > style-report/whitespace.md
+          grep -l -P "\s+$" --include="*.cs" -r Assets/ >> style-report/whitespace.md || echo "None found" >> style-report/whitespace.md
+          
+          echo "## Files with tabs (instead of spaces):" > style-report/tabs.md
+          grep -l -P "\t" --include="*.cs" -r Assets/ >> style-report/tabs.md || echo "None found" >> style-report/tabs.md
+          
+          # Create a master report
+          echo "# C# Style Issues Report" > style-report/index.md
+          echo "" >> style-report/index.md
+          cat style-report/brace-issues.md >> style-report/index.md
+          echo "" >> style-report/index.md
+          cat style-report/long-lines.md >> style-report/index.md
+          echo "" >> style-report/index.md
+          cat style-report/whitespace.md >> style-report/index.md
+          echo "" >> style-report/index.md
+          cat style-report/tabs.md >> style-report/index.md
+          
+          # Display summary in logs
+          cat style-report/index.md
+      
+      - name: Upload style report
+        uses: actions/upload-artifact@v4
+        with:
+          name: style-report
+          path: style-report
+          retention-days: 30

@@ -6,6 +6,9 @@ TagManager:
   tags:
   - MeleeSwing
   - Projectile
+  - HealthBar
+  - GameOver
+  - Enemy
   layers:
   - Default
   - TransparentFX
