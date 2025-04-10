@@ -2021,6 +2021,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -2413806693520163455, guid: 19b153efc5de29447902dfc99b2c7cfa, type: 3}
+    - target: {fileID: 5265242869039099246, guid: 8f7096f09915fe94cb5d3bfa256f6986, type: 3}
+      propertyPath: m_Color.b
+      value: 0.13243146
+      objectReference: {fileID: 0}
+    - target: {fileID: 5265242869039099246, guid: 8f7096f09915fe94cb5d3bfa256f6986, type: 3}
+      propertyPath: m_Color.g
+      value: 0.9056604
+      objectReference: {fileID: 0}
+    - target: {fileID: 5265242869039099246, guid: 8f7096f09915fe94cb5d3bfa256f6986, type: 3}
+      propertyPath: m_Color.r
+      value: 0.2605221
+      objectReference: {fileID: 0}
     - target: {fileID: 7983108801759155732, guid: 8f7096f09915fe94cb5d3bfa256f6986, type: 3}
       propertyPath: m_Constraints
       value: 0
