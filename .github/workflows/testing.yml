@@ -1,4 +1,4 @@
-name: Unity Build and Release testing
+name: Unity Build and Release
 on:
   push:
     branches:
@@ -8,34 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        
-    # Debug step to see the workspace
-    - name: Show workspace structure before build
-      run: ls -la
-        
+      uses: actions/checkout@v4
+      
     - name: Set up Unity
       uses: game-ci/unity-builder@v2
       with:
         unityVersion: '2022.3.32f1'  # Use your actual Unity version
         targetPlatform: 'StandaloneWindows64'
         buildName: 'Eclipsed_Relics'
-        buildPath: 'build'
+        buildPath: './build'
         projectPath: '.'
         unitySerial: ${{ secrets.UNITY_SERIAL }}
     
-    # Debug step to see where files were created
-    - name: Show build directory
-      run: |
-        echo "Files in workspace:"
-        find . -type f -name "*.exe" | sort
-        echo "Files in build directory:"
-        ls -la build || echo "build directory not found"
-        echo "Files in StandaloneWindows64 directory:"
-        ls -la build/StandaloneWindows64 || echo "StandaloneWindows64 directory not found"
-        
     - name: Generate Version
       id: version
       run: |
@@ -43,10 +27,10 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: unity-build
-        path: build/**  # This will include all files in the build directory
+        path: ./build
         
     - name: Create Release on GitHub
       id: create_release
@@ -62,12 +46,18 @@ jobs:
         draft: false
         prerelease: false
         
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: unity-build
+        path: release-artifacts
+        
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/StandaloneWindows64/Eclipsed_Relics.exe  # Adjust this path based on debug output
+        asset_path: ./release-artifacts/StandaloneWindows64/Eclipsed_Relics.exe
         asset_name: Eclipsed_Relics.exe
         asset_content_type: application/octet-stream
