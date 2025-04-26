@@ -1,0 +1,38 @@
+name: Unity Build simple
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Set up Unity
+      uses: game-ci/unity-builder@v2
+      with:
+        unityVersion: '2022.3.32f1'  
+        targetPlatform: 'StandaloneWindows64'
+        buildName: 'Eclipsed_Relics'
+        buildPath: './build'
+        projectPath: '.'
+        unitySerial: ${{ secrets.UNITY_SERIAL }}
+    
+   
+    - name: Find build files
+      run: |
+        echo "Looking for EXE files:"
+        find . -name "*.exe"
+        echo "Contents of the build directory:"
+        ls -la ./build || echo "build directory not found"
+        echo "Subdirectories in build:"
+        find ./build -type d || echo "No subdirectories found"
+    
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: unity-build
+        path: ./build
