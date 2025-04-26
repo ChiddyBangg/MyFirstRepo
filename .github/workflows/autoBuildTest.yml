@@ -1,45 +1,43 @@
 name: Unity Build and Release
-
 on:
   push:
     branches:
       - main 
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
+      with:
+        fetch-depth: 0  # Important for getting git history for versioning
+        
     - name: Set up Unity
       uses: game-ci/unity-builder@v2
       with:
-        unityVersion: '6000.0.32f1' 
+        unityVersion: '2022.3.32f1'  # Use a realistic Unity version
         targetPlatform: 'StandaloneWindows64'
-        buildTarget: 'StandaloneWindows64'
-        buildPath: 'Build/Windows'
+        buildName: 'Eclipsed_Relics'  # Your game's name
+        buildPath: 'build'  # Where Unity will output the build
         projectPath: '.'
         unitySerial: ${{ secrets.UNITY_SERIAL }}
-
+        
     - name: Generate Version
       id: version
       run: |
         # Create a version based on the current tag or commit hash
         VERSION="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: unity-build
-        path: D:\Grigr3 - unity\MyFirstRepo\Build\Eclipsed_Relics.exe 
         
-
+   - name: Upload Build Artifact
+  uses: actions/upload-artifact@v2
+  with:
+    name: unity-build
+    path: build/StandaloneWindows64
+        
     - name: Create Release on GitHub
-      id: create_release  # This ensures the step has an ID and its outputs can be referenced
-      uses: gh actions/create-release@v1
+      id: create_release
+      uses: actions/create-release@v1  # Fixed action reference
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -51,9 +49,19 @@ jobs:
           - Changelog or any notes you want to include in the release.
         draft: false
         prerelease: false
-
+        
     - name: Download Build Artifact
       uses: actions/download-artifact@v2
       with:
         name: unity-build
-
+        path: release-artifacts
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release-artifacts/Eclipsed_Relics.exe
+        asset_name: Eclipsed_Relics.exe
+        asset_content_type: application/octet-stream
