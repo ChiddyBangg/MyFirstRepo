@@ -1,4 +1,4 @@
-name: Unity Build and Release
+name: Unity Build and Release testing
 on:
   push:
     branches:
