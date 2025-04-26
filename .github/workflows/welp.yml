@@ -1,0 +1,66 @@
+name: Unity Build and Release v 16
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Unity
+      uses: game-ci/unity-builder@v2
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      with:
+        unityVersion: '2022.3.32f1'  # Use your actual Unity version
+        targetPlatform: 'StandaloneWindows64'
+        buildName: 'Eclipsed_Relics'
+        buildsPath: './build'  # Corrected from buildPath to buildsPath
+        projectPath: '.'
+        
+    - name: Generate Version
+      id: version
+      run: |
+        VERSION="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: unity-build
+        path: ./build
+        
+    - name: Create Release on GitHub
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: Release ${{ env.VERSION }}
+        body: |
+          - Version: ${{ env.VERSION }}
+          - Description of the release.
+        draft: false
+        prerelease: false
+        
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: unity-build
+        path: release-artifacts
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release-artifacts/StandaloneWindows64/Eclipsed_Relics.exe
+        asset_name: Eclipsed_Relics.exe
+        asset_content_type: application/octet-stream
