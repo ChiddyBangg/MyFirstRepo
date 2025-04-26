@@ -29,11 +29,11 @@ jobs:
         VERSION="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         
-   - name: Upload Build Artifact
-  uses: actions/upload-artifact@v2
-  with:
-    name: unity-build
-    path: build/StandaloneWindows64
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: unity-build
+        path: build/StandaloneWindows64
         
     - name: Create Release on GitHub
       id: create_release
