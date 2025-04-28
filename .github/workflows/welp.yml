@@ -53,8 +53,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: unity-build
-        path: release-artifacts
-        
+        path: release-artifacts 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
