@@ -12,22 +12,19 @@ jobs:
       
     - name: Set up Unity
       uses: game-ci/unity-builder@v4
+     
       env:
         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
         UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       with:
-        unityVersion: '6000.0.32f1'  # Use your actual Unity version
+        unityVersion: '6000.0.32f1'  
         targetPlatform: 'StandaloneWindows64'
+        versioning: Semantic
         buildName: 'Eclipsed_Relics'
-        buildsPath: './build'  # Corrected from buildPath to buildsPath
+        buildsPath: './build'  
         projectPath: '.'
-        
-    - name: Generate Version
-      id: version
-      run: |
-        VERSION="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
+  
         
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
