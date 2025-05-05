@@ -60,3 +60,5 @@ jobs:
         asset_path: ./release-artifacts/StandaloneWindows64/Eclipsed_Relics.exe
         asset_name: Eclipsed_Relics.exe
         asset_content_type: application/octet-stream
+
+        
