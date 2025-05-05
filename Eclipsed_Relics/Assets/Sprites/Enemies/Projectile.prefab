@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   force: 3
-  damage: 25
+  damage: 7
 --- !u!70 &-9178534418314642262
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -9,7 +9,6 @@ TagManager:
   - HealthBar
   - GameOver
   - Enemy
-  - Spawner
   layers:
   - Default
   - TransparentFX
